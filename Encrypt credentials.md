@@ -24,4 +24,4 @@ For option 1, we use the '**ConvertFrom-SecureString**' PowerShell cmdlet with a
 
 For option 2, we use the '**Export-Clixml**' PowerShell cmdlet so that only the user who encrypted the credentials on the specific server can decrypt the credentials.
 
-In the scripts above, the variable '**$Cred**' becomes available. This variable can be used in your scripts to make, for example, a drive map.
+In the scripts above, the variable '**$Cred**' becomes available. This variable can be used in your scripts to make, for example, a drive mapping.
