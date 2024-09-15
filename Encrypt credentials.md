@@ -1,32 +1,27 @@
-Encrypt plain text credentials with Export-Clixml in scripts. You have 2 options. You can choose to encrypt a file so that only a specific user on a specific server can decrypt the file, or you can choose to encrypt a file that any user can decrypt.
-
-#### Example where you need the specific user on the specific server to decrypt the file
-
-1. You want to encrypt the credentials of a local account **CLIENT01\Admin** which you can use for making a drive mapping
-2. Your server that hosts the script is **SERVER01**
-3. The user that runs the script is **SVC_USER01**
-
-**Run PowerShell as user SVC_USER01 on SERVER01**
+### Option 1: Encrypt credentials that any user can decrypt
 
 ```powershell
-# Create encrypted file
-Get-Credential | Export-Clixml -Path "<file>.cred" # Provide credentials for CLIENT01\Admin
+# Create file with encrypted credentials
+(Get-Credential).Password | ConvertFrom-SecureString -Key (1..16) | Out-File "<file>.cred"
 
-# Use the encrypted file
-$Cred = Import-Clixml -Path "<file>.cred" # On SERVER01 with user SVC_USER01 you can store the credentials in a variable
-New-PSDrive -Name "<name>" -Root "<destination>" -PSProvider "FileSystem" -Credential $Cred # Use the credentials to make a drive mapping
-```
-
-#### Example where any user can decrypt the file
-
-1. You want to encrypt the credentials of a local account **CLIENT01\Admin** which you can use for making a drive mapping
-
-```powershell
-# Create encrypted file
-(Get-Credential).Password | ConvertFrom-SecureString -Key (1..16) | Out-File "<file>.cred" # Create the file
-
-# Use the encrypted file
+# Decrypt credentials from file
+$Username = "<username>"
 $Password = Get-Content "<file>.cred" | ConvertTo-SecureString -Key (1..16)
-$Cred = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList "<username>", $Password
-New-PSDrive -Name "<name>" -Root "<destination>" -PSProvider "FileSystem" -Credential $Cred # Use the credentials to make a drive mapping
+$Cred = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList $Username, $Password
 ```
+
+### Option 2: Encrypt credentials that only a specific user on a specific server can decrypt (Export-Clixml)
+
+```powershell
+# Create file with encrypted credentials (log in as the user on the server that will run this script)
+Get-Credential | Export-Clixml -Path "<file>.cred"
+
+# Decrypt credentials from file (again, log in as the user on the server that will run this script)
+$Cred = Import-Clixml -Path "<file>.cred"
+```
+
+For option 1, we use the '**ConvertFrom-SecureString**' PowerShell cmdlet with a **16-byte key** so that the encryption doesn't get tied to the current user's credentials. This way, any user could decrypt the credentials. Not the safest way, but better than plaintext credentials.
+
+For option 2, we use the '**Export-Clixml**' PowerShell cmdlet so that only the user who encrypted the credentials on the specific server can decrypt the credentials.
+
+In the scripts above, the variable '**$Cred**' becomes available. This variable can be used in your scripts to make, for example, a drive map.
