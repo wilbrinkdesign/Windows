@@ -34,7 +34,7 @@ Else # Allow weak crypto
 	$TLS_dotNET = 0
 }
 
-# Create main keys for client/server
+# Create main key for client/server
 New-Item $Protocol_Key"\$($Protocol.Name)\$Type" -Force
 
 Foreach ($Protocol in $TLS_Protocols.GetEnumerator())
