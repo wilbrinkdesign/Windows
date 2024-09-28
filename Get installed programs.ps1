@@ -1,3 +1,12 @@
+<#
+	.DESCRIPTION
+	Get all installed programs.
+	
+	.NOTES
+	Author: Mark Wilbrink
+	Date: see Git info
+#>
+
 $Apps_WMI = Get-WmiObject -Class Win32_Product | Where-Object Name -ne $null
 $Apps_Reg = @(
 	"HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall",

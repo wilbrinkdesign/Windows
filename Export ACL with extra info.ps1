@@ -1,4 +1,16 @@
-$Path = "<dir>"
+<#
+	.DESCRIPTION
+	Get all permissions (ACLs) for all directories/files.
+	
+	.NOTES
+	Author: Mark Wilbrink
+	Date: see Git info
+#>
+
+Param(
+	[Parameter(Mandatory=$True)][string]$Path
+)
+
 $Directory = Get-ChildItem $Path -Recurse
 $Complete_List = @()
 

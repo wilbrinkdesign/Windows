@@ -1,3 +1,12 @@
+<#
+	.DESCRIPTION
+	Get all installed Windows Updates.
+	
+	.NOTES
+	Author: Mark Wilbrink
+	Date: see Git info
+#>
+
 $Windows_Updates = @()
 
 Foreach ($Hotfix in (Get-HotFix)) # Loop through all Windows updates with 'Get-Hotfix'

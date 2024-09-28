@@ -1,3 +1,12 @@
+<#
+	.DESCRIPTION
+	Set a certificate for the WinRM HTTPS listener so you can remote manage the Windows server securely.
+	
+	.NOTES
+	Author: Mark Wilbrink
+	Date: see Git info
+#>
+
 $global:FQDN = [System.Net.Dns]::GetHostByName($env:COMPUTERNAME).HostName
 $global:Cert = Get-ChildItem -Path Cert:\LocalMachine\My\ | Where-Object { $_.Subject -like "CN=$FQDN*" -and $_.NotAfter -gt (Get-Date) } | Sort-Object NotAfter -Descending | Select-Object -First 1
 $global:HTTPSListener = Try { Get-WSManInstance winrm/config/listener -SelectorSet @{Transport='HTTPS'; Address='*'} } Catch {}
