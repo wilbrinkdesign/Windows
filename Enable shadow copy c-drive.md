@@ -1,7 +1,12 @@
-# Enable System Protection on C drive
-rstrui.exe /offline:C:\windows=active
+### First, enable System Protection on C drive
 
-# Create scheduled task for daily shadow copies
+```cmd
+rstrui.exe /offline:C:\windows=active
+```
+
+### 2nd, create a scheduled task for daily shadow copies
+
+```powershell
 $Action = New-ScheduledTaskAction -Execute "cmd" -Argument "/c wmic shadowcopy call create ClientAccessible,'C:\'"
 $Trigger = @(
 	$(New-ScheduledTaskTrigger -At 10PM -Daily),
@@ -11,3 +16,4 @@ $Trigger = @(
 $User = New-ScheduledTaskPrincipal -UserID "NT AUTHORITY\SYSTEM" -LogonType ServiceAccount
 $Task = New-ScheduledTask -Description "Shadow copy" -Action $Action -Principal $User -Trigger $Trigger
 Register-ScheduledTask "Shadow copy" -InputObject $Task
+```
