@@ -1,3 +1,9 @@
+### Cleanup whole WSUS
+
+```powershell
+Get-WsusServer | Invoke-WsusServerCleanup -CleanupObsoleteUpdates -DeclineExpiredUpdates -DeclineSupersededUpdates -CleanupUnneededContentFiles
+```
+
 ### Decline superseded updates
 
 ```powershell
