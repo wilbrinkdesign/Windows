@@ -14,9 +14,7 @@
 	https://www.zabbix.com/documentation/current/en/manual/installation/install_from_packages/win_msi
 
 	.EXAMPLE
-	PS> <script_name>.ps1
-	PS> <script_name>.ps1 -TypeServer prod|test|beheer (woord hoeft niet exact overeen te komen)
-	PS> <script_name>.ps1 -Server proxyzabbix
+	PS> <script_name>.ps1 -Server <name>
 #>
 
 Param(
