@@ -7,9 +7,6 @@
 	Date: see Git info
 #>
 
-# Start logging
-Try { Start-Transcript -Path "${PSCommandPath}.log" | Out-Null } Catch {}
-
 $Second_Tuesday = (0..30 | % { (Get-Date -Day 1).AddDays($_) } | ? { $_.DayOfWeek -match "Tuesday|Dinsdag" })[1]
 $Day_After_Second_Tuesday = $Second_Tuesday.AddDays(1)
 
@@ -26,6 +23,3 @@ Else
 {
 	Write-Host "Today there are no updates available :)" -ForegroundColor Yellow
 }
-
-# Stop logging
-Try { Stop-Transcript | Out-Null } Catch {}

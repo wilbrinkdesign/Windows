@@ -15,9 +15,6 @@
 	https://gist.github.com/someshinyobject/617bf00556bc43af87cd
 #>
 
-# Start logging
-Try { Start-Transcript -Path "${PSCommandPath}.log" | Out-Null } Catch {}
-
 # Variables
 $Pic_Dir_Source = ""
 $Pic_Dir_Finished = "$Pic_Dir_Source\finished\"
@@ -89,6 +86,3 @@ Else
 	Write-Host "PowerShell module not installed: ActiveDirectory" -ForegroundColor Red
 	Write-Host "Command: Install-WindowsFeature RSAT-AD-PowerShell" -ForegroundColor Yellow
 }
-
-# Stop logging
-Try { Stop-Transcript | Out-Null } Catch {}
