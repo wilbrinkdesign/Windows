@@ -14,7 +14,7 @@
 	https://www.zabbix.com/documentation/current/en/manual/installation/install_from_packages/win_msi
 
 	.EXAMPLE
-	PS> <script_name>.ps1 -Server <name>
+	PS> <script_name>.ps1 -Server <name> -Type "Prod"
 #>
 
 Param(
@@ -25,6 +25,16 @@ Param(
 	[string]$PSKName = "",
 	[Parameter(Mandatory=$True)][string]$PSKPassword
 )
+
+# Check type server: Prod/Test/Develop
+switch -Regex ($Type)
+{
+	"test|dev" { $HostMetadata += ",windows-test" }
+	default { $HostMetadata += ",windows-prod" }
+}
+
+# Check if server is domain joined or not
+If ((Get-WmiObject -Class Win32_ComputerSystem).PartOfDomain -eq $True) { $HostMetadata += ",windows-domain" } Else { $HostMetadata += ",windows-nondomain" }
 
 $HostMetadata += ",windows-$(Get-Date -Format 'yyyyMMddHHmm')"
 
