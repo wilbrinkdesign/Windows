@@ -24,7 +24,7 @@ If ((Get-Module -ListAvailable -Name PSPKI)) # If PS module PSPKI is installed, 
 	Import-Module PSPKI
 
 	Write-Host "Checking expired ($Days days) certificates on: $Server" -ForegroundColor Yellow
-	$Expired_Certs = Get-IssuedRequest -CertificationAuthority $Server | Where-Object { $_.CertificateTemplate -match $Template -and (Get-Date $_.NotAfter -Format "yyyy-MM-dd") -eq (Get-Date (Get-Date).AddDays($Days) -Format "yyyy-MM-dd") }
+	$Expired_Certs = Get-IssuedRequest -CertificationAuthority $Server -Property "Request.RawRequest" | Where-Object { $_.CertificateTemplate -match $Template -and (Get-Date $_.NotAfter -Format "yyyy-MM-dd") -eq (Get-Date (Get-Date).AddDays($Days) -Format "yyyy-MM-dd") }
 	
 	Foreach ($Cert in $Expired_Certs)
 	{
@@ -33,7 +33,10 @@ If ((Get-Module -ListAvailable -Name PSPKI)) # If PS module PSPKI is installed, 
 			$Name = $Cert.CommonName
 			$Date = Get-Date $Cert.NotAfter -UFormat "%A %d %B %Y"
 
-			Write-Host "Expired certificates within $Days days: $Name, $Date" -ForegroundColor Yellow
+   			$Bytes = [System.Convert]::FromBase64String($Cert.'Request.RawRequest')
+			$SAN = (New-Object System.Security.Cryptography.X509CertificateRequests.X509CertificateRequest (,$Bytes) | select -ExpandProperty Extensions).AlternativeNames.Value
+
+			Write-Host "Expired certificate within $Days days: $Name (SAN: $($SAN -join ', ')), $Date" -ForegroundColor Yellow
 		}
 	}
 }
