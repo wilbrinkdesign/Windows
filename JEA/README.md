@@ -21,7 +21,7 @@ Restart-Service WinRM
 Enter-PSSession <server> -ConfigurationName <name>
 ```
 
-### Example content of file: <jea_config>.pssc (do not copy/paste)
+### Example content of file: <jea_config>.pssc
 
 ```powershell
 SessionType = 'RestrictedRemoteServer'
@@ -30,7 +30,7 @@ RunAsVirtualAccount = $true
 RoleDefinitions = @{ '<domain>\<group>' = @{ RoleCapabilities = '<jea_config>' }}
 ```
 
-### Example content of file: <jea_capability>.psrc (do not copy/paste)
+### Example content of file: <jea_capability>.psrc
 
 ```powershell
 VisibleCmdlets = @{ Name = 'Restart-Service'; Parameters = @{ Name = 'Name'; ValidateSet = '<service_name>' } }
