@@ -11,6 +11,7 @@
 
 	.EXAMPLE
 	PS> <script_name>.ps1 -StrongCrypto:$true -Type Client
+ 	PS> <script_name>.ps1 -StrongCrypto:$true -Type Client -WhatIf
 #>
 
 [CmdletBinding(SupportsShouldProcess)]
