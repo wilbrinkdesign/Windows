@@ -22,6 +22,7 @@ Param(
 	[string]$AgentConfig = "C:\Program Files\Zabbix Agent 2\zabbix_agent2.conf",
 	[Parameter(Mandatory=$True)][string]$Server,
 	[string]$HostMetadata = "windows",
+ 	[string]$Type = "",
 	[string]$PSKName = "",
 	[Parameter(Mandatory=$True)][string]$PSKPassword
 )
