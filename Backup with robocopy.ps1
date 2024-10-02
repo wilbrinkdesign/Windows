@@ -1,10 +1,15 @@
 <#
 	.DESCRIPTION
-	Backup your data to your Bitlocker enabled drive with the robocopy mirror function.
+	Backup your data to your Bitlocker enabled drive with the Robocopy mirror function.
 	
 	.NOTES
 	Author: Mark Wilbrink
 	Date: see Git info
+
+	- This script will backup your data to a Bitlocker enabled drive.
+	- The Robocopy mirror function will be used, so be carefull!
+	- A folder with todays date will be created on the Bitlocker enabled drive where the backup will be stored.
+	- Certain files and folders will be excluded from this backup.
 
 	.EXAMPLE
 	PS> <script_name>.ps1 -DataDirectory <data_folder>
@@ -56,7 +61,7 @@ Function Backup-Data
 
 	If (!($Bitlocker_Drives).count)
 	{
-		Write-Host "There are no Bitlocker enabled drives found where we can store your backup :(" -ForegroundColor Red
+		Write-Host "There are no Bitlocker enabled drives found where we can store the backup :(" -ForegroundColor Red
 		Break
 	}
 	ElseIf (($Bitlocker_Drives).count -gt 1)
@@ -64,7 +69,7 @@ Function Backup-Data
 		# If there are multiple Bitlocker enabled drives found, show them so that the user can choose
 		(Get-BitLockerVolume | Where-Object { $_.VolumeType -ne "OperatingSystem" }).MountPoint
 		Write-Host ""
-		Do { $Bitlocker_Backup_Location = Read-Host "What is the drive letter where you want to store your backup?" } Until (($Bitlocker_Backup_Location -ne "C:") -and ((Test-Path -Path $Bitlocker_Backup_Location) -eq $True))
+		Do { $Bitlocker_Backup_Location = Read-Host "What is the drive letter where you want to store the backup?" } Until (($Bitlocker_Backup_Location -ne "C:") -and ((Test-Path -Path $Bitlocker_Backup_Location) -eq $True))
 	}
 	Else
 	{
