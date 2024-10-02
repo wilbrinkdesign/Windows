@@ -17,7 +17,7 @@
 [CmdletBinding(SupportsShouldProcess)]
 Param(
 	[Parameter(Mandatory=$True)][boolean]$StrongCrypto,
-	[Parameter(Mandatory=$True)][ValidateSet("Client", "Server")][string]$Type,
+	[Parameter(Mandatory=$True)][ValidateSet("Client", "Server")][string]$Type
 )
 
 $Protocol_Key = "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols"
