@@ -10,7 +10,7 @@
 	PS> <script_name>.ps1 -DataDirectory <data_folder>
 
 	You can also create a profile.ps1 file, for example: C:\Windows\System32\WindowsPowerShell\v1.0\profile.ps1
-	The add the following to this script:
+	Then add the following to this script (edit your own script en data locations):
 
 		. "<script_name>.ps1"
 
