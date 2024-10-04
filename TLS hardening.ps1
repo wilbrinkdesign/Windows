@@ -35,11 +35,11 @@ Else # Allow weak crypto
 	$TLS_dotNET = 0
 }
 
-# Create main key for client/server
-New-Item $Protocol_Key"\$($Protocol.Name)\$Type" -Force
-
 Foreach ($Protocol in $TLS_Protocols.GetEnumerator())
 {
+	# Create main key for client/server
+	New-Item $Protocol_Key"\$($Protocol.Name)\$Type" -Force
+
 	# Set TLS keys
 	If ($Protocol.Value -eq 0) { $Protocol_Disabled_By_Default = 1 } Else { $Protocol_Disabled_By_Default = 0 }
 	New-ItemProperty -Path $Protocol_Key"\$($Protocol.Name)\$Type" -Name Enabled -Value $Protocol.Value -PropertyType DWORD -Force
