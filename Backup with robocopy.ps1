@@ -17,12 +17,12 @@
 	You can also create a profile.ps1 file, for example: C:\Windows\System32\WindowsPowerShell\v1.0\profile.ps1
 	Then add the following to this script (edit your own script en data locations):
 
-		. "<script_name>.ps1"
+	. "<script_name>.ps1"
 
-		Function backup
-		{
-			Backup-Data -DataDirectory <data_folder>
-		}
+	Function backup
+	{
+		Backup-Data -DataDirectory <data_folder>
+	}
 
 	Now every time you start PowerShell, you can run the 'backup' command, and this will fire up this backup script :)
 #>
@@ -96,6 +96,8 @@ Function Backup-Data
 
 	Clear-Host
 
-	Write-Host "'$DataDirectory' will now be copied to: $Data_Drive_Location"  -ForegroundColor Yellow
+	Write-Host "'$DataDirectory' will now be copied to: $Data_Drive_Location" -ForegroundColor Yellow
 	robocopy $DataDirectory $Data_Drive_Location /E /R:0 /MIR /A-:SH /XD ".git" ".svn" /XF "desktop.ini"
+
+	Write-Host "Don't forget to make an export from your vault :)" -ForegroundColor Yellow
 }
