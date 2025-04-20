@@ -97,7 +97,7 @@ Function Backup-Data
 	Clear-Host
 
 	Write-Host "'$DataDirectory' will now be copied to: $Data_Drive_Location" -ForegroundColor Yellow
-	robocopy $DataDirectory $Data_Drive_Location /E /R:0 /MIR /A-:SH /XD ".git" ".svn" /XF "desktop.ini"
+	robocopy $DataDirectory $Data_Drive_Location /E /R:0 /MIR /A-:SH /XD ".git" ".svn" /XF "desktop.ini" "Personal Vault.lnk"
 
 	Write-Host "Don't forget to make an export from your vault :)" -ForegroundColor Yellow
 }
