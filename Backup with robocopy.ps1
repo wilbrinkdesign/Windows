@@ -1,18 +1,18 @@
 <#
 	.DESCRIPTION
-	Backup your data to your Bitlocker enabled drive with the Robocopy mirror function.
+	Backup your data with the Robocopy mirror function.
 	
 	.NOTES
 	Author: Mark Wilbrink
 	Date: see Git info
 
-	- This script will backup your data to a Bitlocker enabled drive.
-	- The Robocopy mirror function will be used, so be carefull!
-	- A folder with todays date will be created on the Bitlocker enabled drive where the backup will be stored.
+	- This script will backup your data.
+	- The Robocopy mirror function will be used, so be careful!
+	- A folder with todays date will be created on the destination where the backup will be stored.
 	- Certain files and folders will be excluded from this backup.
 
 	.EXAMPLE
-	PS> <script_name>.ps1 -DataDirectory <data_folder>
+	PS> <script_name>.ps1 -Source <source> -Destination
 
 	You can also create a profile.ps1 file, for example: C:\Windows\System32\WindowsPowerShell\v1.0\profile.ps1
 	Then add the following to this script (edit your own script en data locations):
@@ -21,7 +21,7 @@
 
 	Function backup
 	{
-		Backup-Data -DataDirectory <data_folder>
+		Backup-Data -Source <source> -Destination <destination>
 	}
 
 	Now every time you start PowerShell, you can run the 'backup' command, and this will fire up this backup script :)
@@ -30,74 +30,37 @@
 Function Backup-Data
 {
 	Param(
-		[string]$DataDirectory
+		[string]$Source,
+		[string]$Destination
 	)
 
-	Clear-Host
-
-	# Check if you run this script as Admin
-	If (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
+	# Check for the source
+	If (!(Test-Path -Path $Source))
 	{
-		Write-Host "Run PowerShell as Admin!" -ForegroundColor Red
-		Break
+		Do
+		{
+			$Source = Read-Host "What would you like to backup? Provide the path"
+		} Until ((Test-Path -Path $Source) -eq $True)
 	}
 
-	# Check the data directory
-	If (!$DataDirectory) # When the 'DataDirectory' parameter was not used, ask the user for the data directory
+	# Check for the destination
+	If (!(Test-Path -Path $Destination))
 	{
-		Do { $DataDirectory = Read-Host "Which drive/directory do you want to backup?" } Until ((Test-Path -Path $DataDirectory) -eq $True)
-	}
-	ElseIf (!(Test-Path $DataDirectory))
-	{
-		Write-Host "Directory not found: $DataDirectory" -ForegroundColor Red
-		Break
-	}
+		Do
+		{
+			Write-Host ""
+			Write-Host "Available drives:" -ForegroundColor Yellow
+			(Get-Partition | Where-Object DriveLetter -match "[a-z]").DriveLetter
 
-	# Get all external drives that are Bitlocker enabled
-	Write-Host "Requesting Bitlocker enabled drives..." -ForegroundColor Yellow
-	Try { Get-BitLockerVolume | Where-Object { $_.VolumeType -ne "OperatingSystem" } | ForEach-Object { $Bitlocker_Drives += ,$_.MountPoint } } Catch {}
-
-	Clear-Host
-
-	If (!($Bitlocker_Drives).count)
-	{
-		Write-Host "There are no Bitlocker enabled drives found where we can store the backup :(" -ForegroundColor Red
-		Break
-	}
-	ElseIf (($Bitlocker_Drives).count -gt 1)
-	{
-		# If there are multiple Bitlocker enabled drives found, show them so that the user can choose
-		(Get-BitLockerVolume | Where-Object { $_.VolumeType -ne "OperatingSystem" }).MountPoint
-		Write-Host ""
-		Do { $Bitlocker_Backup_Location = Read-Host "What is the drive letter where you want to store the backup?" } Until (($Bitlocker_Backup_Location -ne "C:") -and ((Test-Path -Path $Bitlocker_Backup_Location) -eq $True))
-	}
-	Else
-	{
-		# Only 1 Bitlocker enabled drive was found, so put this drive in a variable
-		$Bitlocker_Backup_Location = $Bitlocker_Drives
+			Write-Host ""
+			$Destination = Read-Host "Where do you want to store the backup? Provide the path"
+		} Until ((Test-Path -Path $Destination) -eq $True)
 	}
 
-	$Data_Drive_Location = "$Bitlocker_Backup_Location\$(Get-Date -Format "yyyy-MM-dd")"
+	$Destination_Date = "$Destination\$(Get-Date -Format "yyyy-MM-dd")"
 
-	Clear-Host
+	Write-Host "Backup '$Source' to '$Destination_Date'" -ForegroundColor Yellow
+	robocopy $Source $Destination_Date /E /R:0 /MIR /A-:SH /XD ".git" ".svn" /XF "desktop.ini" "Personal Vault.lnk"
 
-	Write-Host "The files in '$DataDirectory' will be copied to: $Data_Drive_Location" -ForegroundColor Yellow
-
-	Write-Host ""
-	Write-Host "1. Yes" -ForegroundColor Yellow
-	Write-Host "2. No" -ForegroundColor Yellow
-	Write-Host ""
-	Do { $Continue = Read-Host "Continue?" } While ($Continue -notmatch "^[1-2]$")
-
-	If ($Continue -eq 2)
-	{
-		Break
-	}
-
-	Clear-Host
-
-	Write-Host "'$DataDirectory' will now be copied to: $Data_Drive_Location" -ForegroundColor Yellow
-	robocopy $DataDirectory $Data_Drive_Location /E /R:0 /MIR /A-:SH /XD ".git" ".svn" /XF "desktop.ini" "Personal Vault.lnk"
-
-	Write-Host "Don't forget to make an export from your vault :)" -ForegroundColor Yellow
+	Write-Host "Don't forget to make an export from your vault!" -ForegroundColor Yellow
 }
