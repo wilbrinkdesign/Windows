@@ -18,8 +18,8 @@ Foreach ($File in $Directory)
 {
 	$File_Path = $File.FullName
 	$File_Owner = ($File_Path | Get-Acl).Owner
-	$File_Permissions = ($File_Path | Get-Acl | select -ExpandProperty Access).FileSystemRights
-	$File_Members = ($File_Path | Get-Acl | select -ExpandProperty Access).IdentityReference
+	$File_Permissions = ($File_Path | Get-Acl | Select-Object -ExpandProperty Access).FileSystemRights
+	$File_Members = ($File_Path | Get-Acl | Select-Object -ExpandProperty Access).IdentityReference
 	$File_Date = $File.LastWriteTime
 
 	$List = [PSCustomObject]@{
