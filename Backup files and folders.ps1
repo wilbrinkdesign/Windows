@@ -29,10 +29,14 @@
 
 Function Backup-Data
 {
+	[alias("backup")]
 	Param(
 		[string]$Source,
 		[string]$Destination
 	)
+
+	$Exclude_Dirs = ".git", ".svn"
+	$Exclude_Files = "desktop.ini", "Personal Vault.lnk"
 
 	# Check for the source
 	If (!(Test-Path -Path $Source))
@@ -57,10 +61,10 @@ Function Backup-Data
 		} Until ((Test-Path -Path $Destination) -eq $True)
 	}
 
-	$Destination_Date = "$Destination\$(Get-Date -Format "yyyy-MM-dd")"
+	$Destination_Full = "$Destination\$(Get-Date -Format "yyyy-MM-dd")"
 
-	Write-Host "Backup '$Source' to '$Destination_Date'" -ForegroundColor Yellow
-	robocopy $Source $Destination_Date /E /R:0 /MIR /A-:SH /XD ".git" ".svn" /XF "desktop.ini" "Personal Vault.lnk"
+	Write-Host "Backup '$Source' to '$Destination_Full'" -ForegroundColor Yellow
+	robocopy $Source $Destination_Full /E /R:0 /MIR /A-:SH /XD $Exclude_Dirs /XF $Exclude_Files
 
 	Write-Host "Don't forget to make an export from your vault!" -ForegroundColor Yellow
 }
