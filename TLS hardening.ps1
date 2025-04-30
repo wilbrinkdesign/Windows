@@ -10,14 +10,13 @@
 	You can add the WhatIf parameter to this script so you can see what will happen if you run this script in production
 
 	.EXAMPLE
-	PS> <script_name>.ps1 -StrongCrypto:$true -Type Client
- 	PS> <script_name>.ps1 -StrongCrypto:$true -Type Client -WhatIf
+	PS> <script_name>.ps1 -StrongCrypto:$false
+ 	PS> <script_name>.ps1 -StrongCrypto:$false -WhatIf
 #>
 
 [CmdletBinding(SupportsShouldProcess)]
 Param(
-	[Parameter(Mandatory=$True)][boolean]$StrongCrypto,
-	[Parameter(Mandatory=$True)][ValidateSet("Client", "Server")][string]$Type
+	[boolean]$StrongCrypto = $True
 )
 
 $Protocol_Key = "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols"
@@ -42,8 +41,10 @@ Foreach ($Protocol in $TLS_Protocols.GetEnumerator())
 
 	# Set TLS keys
 	If ($Protocol.Value -eq 0) { $Protocol_Disabled_By_Default = 1 } Else { $Protocol_Disabled_By_Default = 0 }
-	New-ItemProperty -Path $Protocol_Key"\$($Protocol.Name)\$Type" -Name Enabled -Value $Protocol.Value -PropertyType DWORD -Force
-	New-ItemProperty -Path $Protocol_Key"\$($Protocol.Name)\$Type" -Name DisabledByDefault -Value $Protocol_Disabled_By_Default -PropertyType DWORD -Force
+	New-ItemProperty -Path $Protocol_Key"\$($Protocol.Name)\Server" -Name Enabled -Value $Protocol.Value -PropertyType DWORD -Force
+	New-ItemProperty -Path $Protocol_Key"\$($Protocol.Name)\Server" -Name DisabledByDefault -Value $Protocol_Disabled_By_Default -PropertyType DWORD -Force
+	New-ItemProperty -Path $Protocol_Key"\$($Protocol.Name)\Client" -Name Enabled -Value $Protocol.Value -PropertyType DWORD -Force
+	New-ItemProperty -Path $Protocol_Key"\$($Protocol.Name)\Client" -Name DisabledByDefault -Value $Protocol_Disabled_By_Default -PropertyType DWORD -Force
 }
 
 # Set .NET keys
