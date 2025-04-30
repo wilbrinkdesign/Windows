@@ -47,8 +47,11 @@ Foreach ($Protocol in $TLS_Protocols.GetEnumerator())
 	New-ItemProperty -Path $Protocol_Key"\$($Protocol.Name)\Client" -Name DisabledByDefault -Value $Protocol_Disabled_By_Default -PropertyType DWORD -Force
 }
 
-# Set .NET keys
-New-ItemProperty -Path $Reg_dotNET_x86 -Name SystemDefaultTlsVersions -Value $TLS_dotNET -PropertyType DWORD -Force
-New-ItemProperty -Path $Reg_dotNET_x86 -Name SchUseStrongCrypto -Value $TLS_dotNET -PropertyType DWORD -Force
-New-ItemProperty -Path $Reg_dotNET_x64 -Name SystemDefaultTlsVersions -Value $TLS_dotNET -PropertyType DWORD -Force
-New-ItemProperty -Path $Reg_dotNET_x64 -Name SchUseStrongCrypto -Value $TLS_dotNET -PropertyType DWORD -Force
+If ($StrongCrypto -eq $True) # Only when strong crypto is used, edit dotnet
+{
+	# Set .NET keys
+	New-ItemProperty -Path $Reg_dotNET_x86 -Name SystemDefaultTlsVersions -Value $TLS_dotNET -PropertyType DWORD -Force
+	New-ItemProperty -Path $Reg_dotNET_x86 -Name SchUseStrongCrypto -Value $TLS_dotNET -PropertyType DWORD -Force
+	New-ItemProperty -Path $Reg_dotNET_x64 -Name SystemDefaultTlsVersions -Value $TLS_dotNET -PropertyType DWORD -Force
+	New-ItemProperty -Path $Reg_dotNET_x64 -Name SchUseStrongCrypto -Value $TLS_dotNET -PropertyType DWORD -Force
+}
