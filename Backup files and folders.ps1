@@ -12,7 +12,7 @@
 	- Certain files and folders will be excluded from this backup.
 
 	.EXAMPLE
-	PS> <script_name>.ps1 -Source <source> -Destination
+	PS> <script_name>.ps1 -Source <source> -Destination <destination>
 
 	You can also create a profile.ps1 file, for example: C:\Windows\System32\WindowsPowerShell\v1.0\profile.ps1
 	Then add the following to this script (edit your own script en data locations):
