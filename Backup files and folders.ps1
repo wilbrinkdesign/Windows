@@ -29,7 +29,6 @@
 
 Function Backup-Data
 {
-	[alias("backup")]
 	Param(
 		[string]$Source,
 		[string]$Destination
