@@ -29,6 +29,8 @@ Get-ADUser -Filter {mobile -like "*"} -Properties * | ForEach-Object {
 Get-ADUser -Filter {department -like "<department_old>"} | ForEach-Object { Set-ADUser -Identity $_.SamAccountName -department "<department_new>" }
 ```
 
+### LDAP dates
+
 ```powershell
 # Get expiration date from AD users
 Get-ADUser -Properties sn, AccountExpirationDate -Filter * -SearchBase "<dn_container>" | fl sn, samaccountname, @{Name='AccountExpiration'; Expression={if ($null -eq $_.AccountExpirationDate) { 'Never Expires' } else { $_.AccountExpirationDate }}}
