@@ -19,31 +19,22 @@ type <ssh_public_key> | ssh <user>@<host> "cat >> .ssh/authorized_keys"
 
 ### Hide a .ZIP folder in an image
 
-1. Zip your folder: <folder.zip>
-2. Download an image: <picture.jpg>
-3. Run the command below:
-
 ```cmd
-copy /b <folder.zip>+<picture.jpg> mysecretphoto.jpg
+REM Zip your folder and download an image and run the command below
+copy /b <zipped_folder.zip>+<downloaded_picture.jpg> mysecretphoto.jpg
 ```
 
-### Start logging
+### Logging
 
 ```powershell
-# Log example: C:\Scripts\Log\202409291131.log
+# Start log
 Try { Start-Transcript -Path "${PSScriptRoot}\Log\$(Get-Date -Format "yyyMMddhhmm").log" | Out-Null } Catch {}
 
-# Log example: C:\Scripts\script.ps1.log
-Try { Start-Transcript -Path "${PSCommandPath}.log" | Out-Null } Catch {}
-```
-
-### Stop logging
-
-```powershell
+# Stop log
 Try { Stop-Transcript | Out-Null } Catch {}
 ```
 
-### Edit pagefile
+### Edit pagefile location
 
 ```powershell
 # Set pagefile to auto
@@ -64,16 +55,6 @@ $Pagefile_C_Drive = Get-WmiObject Win32_PagefileSetting | Where-Object { $_.Name
 $Pagefile_C_Drive.delete()
 ```
 
-### Create scheduled task with PS script and run as SYSTEM and trigger on a daily basis
-
-```powershell
-$Action = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "-ExecutionPolicy Bypass `"<script.ps1>`""
-$Trigger = New-ScheduledTaskTrigger -Daily -At 11PM
-$User = New-ScheduledTaskPrincipal -UserID "NT AUTHORITY\SYSTEM" -LogonType ServiceAccount
-$Task = New-ScheduledTask -Description "<description>" -Action $Action -Principal $User -Trigger $Trigger
-Register-ScheduledTask "<name>" -InputObject $Task
-```
-
 ### Create scheduled task with PS script and run as SYSTEM and trigger on event id
 
 ```powershell
@@ -87,40 +68,25 @@ $Task = New-ScheduledTask -Description "<description>" -Action $Action -Principa
 Register-ScheduledTask "<name>" -InputObject $Task
 ```
 
-### Examples for proxies for SYSTEM account
+### Proxy for SYSTEM account
 
 ```powershell
 bitsadmin /Util /SetIEProxy localsystem AUTODETECT
 bitsadmin /util /setieproxy localsystem MANUAL_PROXY <proxy>:<port> ""
 ```
 
-### Run PowerShell code in Task Schedular
-
-1. Program/script: powershell.exe
-2. Arguments: -Command &{ <ps_code> }
-
-### Run PowerShell script in Task Schedular
-
-1. Program/script: powershell.exe
-2. Arguments: -ExecutionPolicy Bypass -File <ps1_file>
-
 ### Search for recently updated files
 
 ```powershell
-# All files
-Get-ChildItem "<pad>" -File -Recurse | Where-Object { $_.LastWriteTime -ge (Get-Date).AddHours(-1) } | fl FullName, LastWriteTime
-
-# Specific log files
+# Search for specific log files that were edited the last hour
 Get-ChildItem "<pad>\*.log" -File -Recurse | Where-Object { $_.LastWriteTime -ge (Get-Date).AddHours(-1) } | fl FullName, LastWriteTime
 ```
 
-### First, enable System Protection on C drive
+### Enable previous versions (shadow copy)
 
 ```cmd
 rstrui.exe /offline:C:\windows=active
 ```
-
-### 2nd, create a scheduled task for daily shadow copies
 
 ```powershell
 $Action = New-ScheduledTaskAction -Execute "cmd" -Argument "/c wmic shadowcopy call create ClientAccessible,'C:\'"
@@ -134,14 +100,8 @@ $Task = New-ScheduledTask -Description "Shadow copy" -Action $Action -Principal 
 Register-ScheduledTask "Shadow copy" -InputObject $Task
 ```
 
-### Search for certificates in the Windows certificate store with a specific name
+### Search for certificates in the Windows certificate store with a specific date and name
 
 ```powershell
-Get-ChildItem Cert: -Recurse | Where-Object Subject -like "*<naam>*"
-```
-
-### Search for certificates in the Windows certificate store with a specific date
-
-```powershell
-Get-ChildItem Cert: -Recurse | Where-Object NotAfter -like "*10/??/2023*" | fl Subject, NotAfter
+Get-ChildItem Cert: -Recurse | Where-Object { $_.Subject -like "*<name>*" -and $_.NotAfter -like "*10/??/2023*" } | fl Subject, NotAfter
 ```
