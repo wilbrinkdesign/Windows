@@ -10,6 +10,15 @@
 
 	Check current metadata date: exiftool -DateTimeOriginal -s3 <file>
 
+	.PARAMETER Folder
+	This is the source path where the files resign where you want to add the date as metadata.
+
+	.PARAMETER Recurse
+	Activate this switch if there are any files in subfolders.
+
+	.PARAMETER DateFormat
+	Use this parameter if you're photos have different date formatting then 'yyyyMMdd'.
+
 	.LINK
 	https://exiftool.org/
 
@@ -18,11 +27,30 @@
 #>
 
 Param(
-	[Parameter(Mandatory=$True)][string]$Folder,
+	[string]$Folder,
+	[switch]$Recurse,
 	[string]$DateFormat = "yyyyMMdd"
 )
 
-$Files = Get-ChildItem $Folder -Recurse
+# If ExifTool is not installed, then exit the script
+If (!(Get-Command exiftool -ErrorAction SilentlyContinue))
+{
+	Write-Host "ExifTool not installed: https://exiftool.org/" -ForegroundColor Red
+	Break
+}
+
+# Check folder path
+If (!(Test-Path -Path $Folder))
+{
+	Do
+	{
+		$Folder = Read-Host "Where are the files that you want to add the date as metadata? Provide the path"
+	} Until ((Test-Path -Path $Folder) -eq $True)
+}
+
+If ($Recurse) { $Recurse_Param = @{ "Recurse" = $True } } # Use the -Recurse parameter for Get-ChildItem if the switch was used
+
+$Files = Get-ChildItem $Folder @Recurse_Param
 
 Foreach ($File in $Files)
 {
