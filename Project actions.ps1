@@ -41,8 +41,9 @@
 
 Function Project-Start
 {
+	[alias("project")]
 	Param(
-		[string]$Source
+		[string]$Source = $env:WilbrinkDesign
 	)
 
 	# Check for the source
@@ -77,6 +78,7 @@ Function Project-Start
 
 Function Project-CopyFiles
 {
+	[alias("projectcopy")]
 	Param(
 		[string]$Source,
 		[string]$Destination
@@ -133,6 +135,7 @@ Function Project-CopyFiles
 
 Function Project-RemovePrefix
 {
+	[alias("projectprefix")]
 	Param(
 		[string]$Source
 	)
@@ -167,6 +170,7 @@ Function Project-RemovePrefix
 
 Function Project-Zip
 {
+	[alias("projectzip")]
 	Param(
 		[string]$Source
 	)

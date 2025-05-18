@@ -19,22 +19,26 @@
 	PS> <script_name>.ps1 -Folder <path> -Pattern "prefix1|prefix2"
 #>
 
-Param(
-	[string]$Folder,
-	[switch]$Recurse,
-	[string]$Pattern = "IMG-|IMG_" # Remove everything with prefix 'IMG-' or 'IMG_'
-)
-
-# Check folder path
-If (!(Test-Path -Path $Folder))
+Function Rename-Files
 {
-	Do
+	[alias("rename")]
+	Param(
+		[string]$Folder,
+		[switch]$Recurse,
+		[string]$Pattern = "IMG-|IMG_" # Remove everything with prefix 'IMG-' or 'IMG_'
+	)
+
+	# Check folder path
+	If (!(Test-Path -Path $Folder))
 	{
-		$Folder = Read-Host "Where are the files that you want to rename? Provide the path"
-	} Until ((Test-Path -Path $Folder) -eq $True)
+		Do
+		{
+			$Folder = Read-Host "Where are the files that you want to rename? Provide the path"
+		} Until ((Test-Path -Path $Folder) -eq $True)
+	}
+
+	If ($Recurse) { $Recurse_Param = @{ "Recurse" = $True } } # Use the -Recurse parameter for Get-ChildItem if the switch was used
+
+	Write-Host "Renaming files in '$Folder' with regex: $Pattern" -ForegroundColor Yellow
+	Get-ChildItem -Path $Folder @Recurse_Param | Rename-Item -NewName { $_.Name -replace $Pattern }
 }
-
-If ($Recurse) { $Recurse_Param = @{ "Recurse" = $True } } # Use the -Recurse parameter for Get-ChildItem if the switch was used
-
-Write-Host "Renaming files in '$Folder' with regex: $Pattern" -ForegroundColor Yellow
-Get-ChildItem -Path $Folder @Recurse_Param | Rename-Item -NewName { $_.Name -replace $Pattern }
