@@ -38,3 +38,10 @@ Get-ADUser -Properties sn, AccountExpirationDate -Filter * -SearchBase "<dn_cont
 # Get last logon from AD users
 Get-ADUser -Properties * -Filter * | Select @{Name="LastLogonTimestamp";Expression={[datetime]::FromFileTime($_.'LastLogonTimestamp')}}, @{Name="LastLogon";Expression={[datetime]::FromFileTime($_.'LastLogon')}}, @{Name="AccountExpirationDate";Expression={[datetime]::FromFileTime($_.'AccountExpirationDate')}}, @{Name="PwdLastSet";Expression={[datetime]::FromFileTime($_.'PwdLastSet')}}, samaccountname, mail 
 ```
+
+### Disable password sync AD object
+
+```reg
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\Netlogon\Parameters]
+"DisablePasswordChange"=dword:00000001
+```
