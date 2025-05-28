@@ -40,5 +40,5 @@ Function Rename-Files
 	If ($Recurse) { $Recurse_Param = @{ "Recurse" = $True } } # Use the -Recurse parameter for Get-ChildItem if the switch was used
 
 	Write-Host "Renaming files in '$Folder' with regex: $Pattern" -ForegroundColor Yellow
-	Get-ChildItem -Path $Folder @Recurse_Param | Rename-Item -NewName { $_.Name -replace $Pattern }
+	Get-ChildItem -Path $Folder -File @Recurse_Param | Rename-Item -NewName { $_.Name -replace $Pattern }
 }
