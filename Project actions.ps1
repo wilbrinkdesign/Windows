@@ -21,22 +21,9 @@
 
 	.EXAMPLE
 	PS> project
-	PS> Project-Start
-	PS> Project-CopyFiles
-	PS> Project-RemovePrefix
-	PS> Project-Zip
-
-	The alias names above become available if you create a profile.ps1 file, for example: C:\Windows\System32\WindowsPowerShell\v1.0\profile.ps1
-	Then add the following to this script (edit your own script en data locations):
-
-	. "<script_name>.ps1"
-
-	Function project
-	{
-		Project-Start -Source <source>
-	}
-
-	Now every time you start PowerShell, you can run the function names, and this will fire up this script :)
+	PS> projectcopy
+	PS> projectprefix
+	PS> projectzip
 #>
 
 Function Project-Start
