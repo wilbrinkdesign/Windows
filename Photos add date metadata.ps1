@@ -8,8 +8,6 @@
 
 	Dependencies: ExifTool
 
-	Check current metadata date: exiftool -DateTimeOriginal -s3 <file>
-
 	.PARAMETER Folder
 	This is the source path where the files resign where you want to add the date as metadata.
 
@@ -23,7 +21,7 @@
 	https://exiftool.org/
 
 	.EXAMPLE
-	PS> <script_name>.ps1 Folder <path> -DateFormat "yyyy-MM-dd"
+	PS> <script_name>.ps1 -Folder <path> -DateFormat "yyyyddMM"
 #>
 
 Function Photo-MetaDate
@@ -53,19 +51,30 @@ Function Photo-MetaDate
 
 	If ($Recurse) { $Recurse_Param = @{ "Recurse" = $True } } # Use the -Recurse parameter for Get-ChildItem if the switch was used
 
-	$Files = Get-ChildItem $Folder @Recurse_Param
+	$Files = Get-ChildItem $Folder -File @Recurse_Param
 
 	Foreach ($File in $Files)
 	{
-		Try
+		If (!(exiftool -DateTimeOriginal -s3 $File.FullName))
 		{
-			Write-Host "Checking: $($File.Name)" -ForegroundColor Yellow
-			$Name = $($File.Name).Substring(0, 8)
-			$Date = [datetime]::ParseExact($Name, $DateFormat, $null)
-			$File_Date = Get-Date $Date -Format "yyyy:MM:dd HH:mm:Ss"
+			Try
+			{
+				Write-Host "Checking: $($File.FullName)" -ForegroundColor Yellow
+				$Name = $($File.Name).Substring(0, 8)
+				$Date = [datetime]::ParseExact($Name, $DateFormat, $null)
+				$File_Date = Get-Date $Date -Format "yyyy:MM:dd HH:mm:Ss"
 
-			Write-Host "Add date $File_Date to metadata of file: $($File.Name)" -ForegroundColor Green
-			exiftool "-DateTimeOriginal=$File_Date" "-DateTimeDigitized=$File_Date" "-overwrite_original" "$($File.FullName)"
-		} Catch {}
+				Write-Host "Add date $File_Date to: $($File.FullName)" -ForegroundColor Green
+				exiftool "-DateTimeOriginal=$File_Date" "-DateTimeDigitized=$File_Date" "-overwrite_original" "$($File.FullName)"
+			}
+			Catch
+			{
+				Write-Host "Date not added: $($File.FullName)" -ForegroundColor Red
+			}
+		}
+		Else
+		{
+			Write-Host "Skipping file, date already present: $($File.FullName)" -ForegroundColor Yellow
+		}
 	}
 }
