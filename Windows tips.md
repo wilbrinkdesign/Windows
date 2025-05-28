@@ -105,3 +105,28 @@ Register-ScheduledTask "Shadow copy" -InputObject $Task
 ```powershell
 Get-ChildItem Cert: -Recurse | Where-Object { $_.Subject -like "*<name>*" -and $_.NotAfter -like "*10/??/2023*" } | fl Subject, NotAfter
 ```
+
+### Run remote task on server
+
+```cmd
+schtasks.exe /run /s <server> /tn "\<folder>\<task_name>"
+```
+
+### Update Windows 2012 or later
+
+```powershell
+If (([System.Environment]::OSVersion.Version.Build) -ge 14393) # Greater then Windows Server 2012
+{
+	usoclient startinstall
+}
+Else
+{
+	& C:\Windows\System32\wuauclt.exe /UpdateNow
+}
+```
+
+### Run PowerShell in cmd
+
+```powershell
+powershell.exe -Command "&{ <command> }"
+```
