@@ -26,7 +26,7 @@
 
 Function Photo-MetaDate
 {
-	[alias("metadata")]
+	[alias("metadate")]
 	Param(
 		[string]$Folder,
 		[switch]$Recurse,
