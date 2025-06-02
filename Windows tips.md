@@ -130,3 +130,13 @@ Else
 ```powershell
 powershell.exe -Command "&{ <command> }"
 ```
+
+### Add key for Extended Support
+
+```powershell
+$MAK_Key = "2NQHF-BQFXP-GFYJV-DFR7W-9TR84" # Key for extended support: https://learn.microsoft.com/en-us/windows-server/get-started/extended-security-updates-deploy#access-your-multiple-activation-key-from-the-microsoft-365-admin-center
+$SKU_ID = "e3e2690b-931c-4c80-b1ff-dffba8a81988" # ESU SKU ID that corresponds with a specific year: https://techcommunity.microsoft.com/blog/windows-itpro-blog/windows-server-2012r2-extended-security-updates/3976610
+
+cscript C:\Windows\System32\slmgr.vbs /ipk $MAK_Key # Inject MAK key
+cscript C:\Windows\System32\slmgr.vbs /ato $SKU_ID # Activate with key
+```
