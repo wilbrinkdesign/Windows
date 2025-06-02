@@ -7,14 +7,14 @@
 	Date: see Git info
 #>
 
-$global:FQDN = [System.Net.Dns]::GetHostByName($env:COMPUTERNAME).HostName
-$global:Cert = Get-ChildItem -Path Cert:\LocalMachine\My\ | Where-Object { $_.Subject -like "CN=$FQDN*" -and $_.NotAfter -gt (Get-Date) } | Sort-Object NotAfter -Descending | Select-Object -First 1
-$global:HTTPSListener = Try { Get-WSManInstance winrm/config/listener -SelectorSet @{Transport='HTTPS'; Address='*'} } Catch {}
+$FQDN = [System.Net.Dns]::GetHostByName($env:COMPUTERNAME).HostName
+$Cert = Get-ChildItem -Path Cert:\LocalMachine\My\ | Where-Object { $_.Subject -like "CN=$FQDN*" -and $_.NotAfter -gt (Get-Date) } | Sort-Object NotAfter -Descending | Select-Object -First 1
+$HTTPSListener = Try { Get-WSManInstance winrm/config/listener -SelectorSet @{Transport='HTTPS'; Address='*'} } Catch {}
 
 Function New-SelfSignedCert
 {
 	Write-Host "Create self-signed cert..." -ForegroundColor Yellow
-	$global:Cert = New-SelfSignedCertificate -CertStoreLocation Cert:\LocalMachine\My -DnsName $FQDN
+	$Cert = New-SelfSignedCertificate -CertStoreLocation Cert:\LocalMachine\My -DnsName $FQDN
 }
 
 Function Activate-HTTPSListener
