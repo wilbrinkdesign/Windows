@@ -12,7 +12,6 @@ Param(
 )
 
 $Directory = Get-ChildItem $Path -Recurse
-$Complete_List = @()
 
 Foreach ($File in $Directory)
 {
@@ -30,7 +29,7 @@ Foreach ($File in $Directory)
 		Date        = $File_Date
 	}
 
-	$Complete_List += $List
+	[array]$Complete_List += $List
 }
 
 $Complete_List | Out-GridView
