@@ -39,6 +39,7 @@ Function Project-Start
 		Do
 		{
 			$Source = Read-Host "Where are your projects stored? Provide the path"
+			$Source = $Source.Trim("'`"")
 		} Until ((Test-Path -Path $Source) -eq $True)
 	}
 
@@ -77,6 +78,7 @@ Function Project-CopyFiles
 		Do
 		{
 			$Source = Read-Host "Where did you save your logo files? Provide the path"
+			$Source = $Source.Trim("'`"")
 		} Until ((Test-Path -Path $Source) -eq $True)
 	}
 
@@ -86,6 +88,7 @@ Function Project-CopyFiles
 		Do
 		{
 			$Destination = Read-Host "Where is your logo project stored? Provide the path"
+			$Destination = $Destination.Trim("'`"")
 		} Until ((Test-Path -Path $Destination) -eq $True)
 	}
 
@@ -133,6 +136,7 @@ Function Project-RemovePrefix
 		Do
 		{
 			$Source = Read-Host "Where are your logos stored that you want to rename (remove prefix)? Provide the path"
+			$Source = $Source.Trim("'`"")
 		} Until ((Test-Path -Path $Source) -eq $True)
 	}
 
@@ -168,6 +172,7 @@ Function Project-Zip
 		Do
 		{
 			$Source = Read-Host "Where is your project stored that you want to zip? Provide the path"
+			$Source = $Source.Trim("'`"")
 		} Until ((Test-Path -Path $Source) -eq $True)
 	}
 
