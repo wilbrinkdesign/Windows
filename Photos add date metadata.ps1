@@ -59,7 +59,7 @@ Function Photo-MetaDate
 		Try
 		{
 			Write-Host "Checking: $($File.FullName)" -ForegroundColor Yellow
-			$Name = $($File.Name).Substring(0, 8)
+			$Name = $($File.Name).Substring(0, 8) # Get date from filename: 20150506_picture01.jpg => 20150506
 			$Date = [datetime]::ParseExact($Name, $DateFormat, $null)
 			$File_Date = Get-Date $Date -Format "yyyy:MM:dd HH:mm:Ss"
 
