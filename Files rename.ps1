@@ -25,7 +25,7 @@ Function Rename-Files
 	Param(
 		[string]$Folder,
 		[switch]$Recurse,
-		[string]$Pattern = "IMG-|IMG_" # Remove everything with prefix 'IMG-' or 'IMG_'
+		[string]$Pattern = "IMG-|IMG_|VID-"
 	)
 
 	# Check folder path

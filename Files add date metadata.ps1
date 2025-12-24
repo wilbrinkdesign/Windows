@@ -61,11 +61,13 @@ Function Photo-MetaDate
 			Write-Host "Checking: $($File.FullName)" -ForegroundColor Yellow
 			$Name = $($File.Name).Substring(0, 8) # Get date from filename: 20150506_picture01.jpg => 20150506
 			$Date = [datetime]::ParseExact($Name, $DateFormat, $null)
-			$File_Date = Get-Date $Date -Format "yyyy:MM:dd HH:mm:Ss"
+			$File_Date = Get-Date $Date -Format "yyyy:MM:dd HH:mm:ss"
 
 			If ($File -match ".JPEG|.JPG") # Images
 			{
-				If (!(exiftool -DateTimeOriginal -s3 $File.FullName))
+				$Match = exiftool -DateTimeOriginal -s3 $File.FullName
+
+				If (!$Match)
 				{
 					Write-Host "Add date $File_Date to: $($File.FullName)" -ForegroundColor Green
 					exiftool "-DateTimeOriginal=$File_Date" "-DateTimeDigitized=$File_Date" "-overwrite_original" "$($File.FullName)"
@@ -75,9 +77,11 @@ Function Photo-MetaDate
 					Write-Host "Skipping file, date already present: $($File.FullName)" -ForegroundColor Yellow
 				}
 			}
-			Else # Videos
+			ElseIf ($File -match ".MP4") # Videos
 			{
-				If (!(exiftool -CreateDate -s3 $File.FullName))
+				$Match = exiftool -CreateDate -s3 $File.FullName
+
+				If (!$Match -or $Match -match "0000")
 				{
 					Write-Host "Add date $File_Date to: $($File.FullName)" -ForegroundColor Green
 					exiftool "-CreateDate=$File_Date" "-overwrite_original" "$($File.FullName)"
@@ -86,6 +90,10 @@ Function Photo-MetaDate
 				{
 					Write-Host "Skipping file, date already present: $($File.FullName)" -ForegroundColor Yellow
 				}
+			}
+			Else
+			{
+				Write-Host "No file extension match for: $($File.FullName)" -ForegroundColor Yellow
 			}
 		}
 		Catch
